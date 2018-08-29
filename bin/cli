@@ -1,0 +1,81 @@
+#!/usr/bin/env php
+<?php
+
+require_once(__DIR__ . '/../vendor/autoload.php');
+require_once(__DIR__ . '/../include/autoload.php');
+
+use GetOpt\GetOpt;
+use GetOpt\Option;
+use GetOpt\Command;
+use GetOpt\ArgumentException;
+use GetOpt\ArgumentException\Missing;
+
+
+$get_opts = new \GetOpt\GetOpt();
+
+$get_opts->addOptions([
+    \GetOpt\Option::create('h', 'help'   , \GetOpt\GetOpt::NO_ARGUMENT)
+        ->setDescription('Display this help text.'),
+
+    \GetOpt\Option::create('f', 'search' , \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setDescription('Search for a long url with a given short url.'),
+        
+    \GetOpt\Option::create('s', 'shorten', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setDescription('Shorten the given long url.'),
+        
+    \GetOpt\Option::create('d', 'decode', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setDescription('Decode data encoded using Base58.'),
+        
+    \GetOpt\Option::create('e', 'encode', \GetOpt\GetOpt::REQUIRED_ARGUMENT)
+        ->setDescription('Encode an integer value with Base58.')
+]);
+
+try {
+    $get_opts->process();
+
+    foreach ($get_opts->getOptions() as $opt => $val) {
+        switch ($opt) {
+            case 'help': {
+                printf ("\n%s\n", $get_opts->getHelpText());
+                exit(0);
+            }
+
+            case 'shorten': {
+                $url = new Url();
+                printf ("shortened url: %s\n", $url->shorten($val));
+                break;
+            }
+
+            case 'search': {
+                $url = new Url();
+                $url->set_short($val);
+                $long_url = $url->get_long_url($val);
+
+                if (!isset($long_url) || !is_string($long_url) || !strlen($long_url)) {
+                    exit("Unable to find a corresponding long url value for the given short url '$val'..");
+                }
+
+                printf ("long url found: %s\n", $long_url);
+                break;
+            }
+
+            case 'encode': {
+                printf ("encoded: %s\n", Base58::encode($val));
+                break;
+            }
+
+            case 'decode': {
+                printf ("decoded: %d\n", Base58::decode($val));
+                break;
+            }
+
+            default: break;
+        }
+    }
+}
+catch(\GetOpt\ArgumentException $e) {
+    exit($e->getMessage());
+}
+catch(Exception $e) {
+    exit($e->getMessage());
+}

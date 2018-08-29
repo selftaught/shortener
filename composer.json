@@ -1,0 +1,9 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "require": {
+        "ulrichsg/getopt-php": "^3.0",
+        "respect/validation": "^1.1"
+    }
+}

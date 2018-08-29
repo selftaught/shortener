@@ -1,0 +1,6 @@
+*.swp
+*.swo
+composer.lock
+vendor
+.idea
+urldb.csv
