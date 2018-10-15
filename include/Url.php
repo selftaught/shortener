@@ -8,7 +8,8 @@ use Respect\Validation\Validator as v;
  * get both the long and short version of the
  * given url.
  */
-class Url {
+class Url
+{
 
     protected $long_url;
     protected $short_url;
@@ -18,7 +19,8 @@ class Url {
      * Construct the Url object and set default
      * member variable values.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->long_url  = null;
         $this->short_url = null;
         $this->store     = null;
@@ -29,10 +31,11 @@ class Url {
      *
      * @access public
      * @throws Exception if the given $url doesn't match the url validation regex.
-     * @param  string $long_url  long url value
+     * @param  string $long_url long url value
      * @return void
      */
-    public function set_long($long_url) {
+    public function set_long($long_url)
+    {
         $this->validate_url($long_url);
         $this->long_url = $long_url;
     }
@@ -43,10 +46,11 @@ class Url {
      * @access public
      * @throws Exception if the given $url doesn't match the url validation regex
      *      via a call to $this->validate_url($url).
-     * @param  string $short_url  short url value
+     * @param  string $short_url short url value
      * @return void
      */
-    public function set_short($short_url) {
+    public function set_short($short_url)
+    {
         $this->validate_url($short_url);
         $this->short_url = $short_url;
     }
@@ -57,11 +61,12 @@ class Url {
      *
      * @access public
      * @throws Exception if the given $long url isn't set or is a zero-len str
-     * @param  string $long       long url to shorten
+     * @param  string $long long url to shorten
      * @return string $short_url  shortened url
      */
-    public function create_short($long) {
-        if (is_null($long) || !strlen($long)) { 
+    public function create_short($long)
+    {
+        if (is_null($long) || !strlen($long)) {
             throw new Exception('missing long url!');
         }
 
@@ -76,10 +81,11 @@ class Url {
             }
         }
 
-		if (!isset($this->short_url) ||
-			!strlen($this->short_url)) {
-				$this->short_url = sprintf('%s/%s', Config::BASE_URL, $url_store->add_entry($long));
-		}
+        if (!isset($this->short_url)
+            || !strlen($this->short_url)
+        ) {
+            $this->short_url = sprintf('%s/%s', Config::BASE_URL, $url_store->add_entry($long));
+        }
 
         return $this->short_url;
     }
@@ -89,10 +95,11 @@ class Url {
      *
      * @access public
      * @throws Exception if the given $url doesn't match the url validation regex.
-     * @param  string $url	url to validate
+     * @param  string $url url to validate
      * @return true
      */
-    public function validate_url($url) {
+    public function validate_url($url)
+    {
         if (!v::url()->validate($url)) {
             throw new Exception('url is invalid!');
         }
@@ -106,9 +113,11 @@ class Url {
      *
      * @return object $url_store
      */
-    protected function get_url_store() {
-        if (is_null($this->store) || 
-            !is_object($this->store)) {
+    protected function get_url_store()
+    {
+        if (is_null($this->store)
+            || !is_object($this->store)
+        ) {
             $this->store = new UrlStore();
         }
 
@@ -121,10 +130,11 @@ class Url {
      * @access public
      * @throws Exception if neither a long or short url are set, or a throw
      *      will occur if a long url couldn't be found for the given short url.
-     * @param  string $short_url   corresponding short url <-> long url value
+     * @param  string $short_url corresponding short url <-> long url value
      * @return string $long_url
      */
-    public function get_long_url($short_url) {
+    public function get_long_url($short_url)
+    {
         $lu_is_null = is_null($this->long_url);
         $su_is_null = is_null($this->short_url);
 
@@ -145,7 +155,7 @@ class Url {
                     return $this->long_url;
                 }
 
-                $throw_msg = 'a long url could not be found for the shortened url!'; 
+                $throw_msg = 'a long url could not be found for the shortened url!';
             }
 
             throw new Exception($throw_msg);
@@ -159,10 +169,11 @@ class Url {
      *
      * @access public
      * @throws Exception if both the short and long urls are not set.
-     * @param  string $long_url   corresponding long url <-> short url value
+     * @param  string $long_url corresponding long url <-> short url value
      * @return string $short_url
      */
-    public function shorten($long_url) {
+    public function shorten($long_url)
+    {
         $lu_is_null = is_null($this->long_url);
         $su_is_null = is_null($this->short_url);
 
@@ -183,5 +194,3 @@ class Url {
         return $this->short_url;
     }
 }
-
-

@@ -3,7 +3,8 @@
 /**
  * Class UrlStore
  */
-class UrlStore extends File {
+class UrlStore extends File
+{
 
     protected $path;
 
@@ -16,7 +17,8 @@ class UrlStore extends File {
      * @access public
      * @return void
      */
-    public function __construct($path = null) {
+    public function __construct($path = null)
+    {
         $this->path = (is_null($path) ? Config::URL_CSV_FILE_PATH : $path);
         parent::__construct($this->path);
     }
@@ -26,49 +28,50 @@ class UrlStore extends File {
      *
      * @return object
      */
-    public function file() {
+    public function file()
+    {
         return $this->file;
     }
 
     /**
      * Appends an entry to the csv file after creating
-	 * a shortened URI off of the row index.
+     * a shortened URI off of the row index.
      *
      * @access public
-     * @param $long_url
+     * @param  $long_url
      * @return void
      */
-    public function add_entry($long_url, $short_uri = null) {
+    public function add_entry($long_url, $short_uri = null)
+    {
         if (is_null($long_url)) {
             throw new Exception('long_url was null!');
         }
 
-		$this->block_store();
+        $this->block_store();
 
-		$idx   = $this->get_next_index();
-		$url   = new Url($long_url);
+        $idx   = $this->get_next_index();
+        $url   = new Url($long_url);
         $short = (is_null($short_uri) || !is_string($short_uri) ? Base58::encode($idx) : $short_uri);
 
         if (!is_int($idx) || !$idx) {
-			$this->unblock_store();
+            $this->unblock_store();
             throw new Exception('couldnt get the next available index!');
         }
 
-		if (is_null($short) || !is_string($short) || !strlen($short)) {
-			$this->unblock_store();
+        if (is_null($short) || !is_string($short) || !strlen($short)) {
+            $this->unblock_store();
             throw new Exception('shortened url is missing or invalid!');
-		}
+        }
 
-		try {
-			$this->append_line(sprintf('%d,%s,%s,%s', $idx, $short, $long_url, date('Y-m-d H:i:s')));
-			$this->unblock_store();
-		}
-		catch(Exception $e) {
-			$this->unblock_store();
-			exit($e->getMessage());
-		}
+        try {
+            $this->append_line(sprintf('%d,%s,%s,%s', $idx, $short, $long_url, date('Y-m-d H:i:s')));
+            $this->unblock_store();
+        } catch (Exception $e) {
+            $this->unblock_store();
+            exit($e->getMessage());
+        }
 
-		return $short;
+        return $short;
     }
 
     /**
@@ -78,9 +81,11 @@ class UrlStore extends File {
      * @access public
      * @return bool
      */
-    public function long_url_exists($long_url) {
-        if (!is_string($long_url) ||
-             is_null($this->find_matching_line("#,?$long_url,?#"))) {
+    public function long_url_exists($long_url)
+    {
+        if (!is_string($long_url)
+            || is_null($this->find_matching_line("#,?$long_url,?#"))
+        ) {
             return false;
         }
         return true;
@@ -92,7 +97,8 @@ class UrlStore extends File {
      * @access public
      * @return void
      */
-    public function block_store() {
+    public function block_store()
+    {
         $this->set_blocking();
     }
 
@@ -102,7 +108,8 @@ class UrlStore extends File {
      * @access public
      * @return void
      */
-    public function unblock_store() {
+    public function unblock_store()
+    {
         $this->set_blocking(false);
     }
 
@@ -113,7 +120,8 @@ class UrlStore extends File {
      * @param  $cond_vars
      * @return void
      */
-    public function get_row($cond_vars) {
+    public function get_row($cond_vars)
+    {
         if (!is_array($cond_vars)) {
             throw new Exception("cond_vars param must be an array!");
         }
@@ -162,7 +170,8 @@ class UrlStore extends File {
      * @throws Exception
      * @return int
      */
-    public function get_next_index() {
+    public function get_next_index()
+    {
         $line = $this->get_last_line();
 
         if (!strlen($line)) {
@@ -178,4 +187,3 @@ class UrlStore extends File {
         return (int)$boom[0] + 1;
     }
 }
-

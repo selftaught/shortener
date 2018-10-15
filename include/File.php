@@ -3,7 +3,8 @@
 /**
  * Class File
  */
-class File {
+class File
+{
 
     protected $block;
     protected $path;
@@ -18,13 +19,14 @@ class File {
      * @access public
      * @throws Exception from unabled called to $this->open()
      *
-     * @param  string $path   Path of file to open.
-     * @param  string $mode   Mode to open the file in.
-     * @param  bool   $block  Path of file to open.
+     * @param string $path  Path of file to open.
+     * @param string $mode  Mode to open the file in.
+     * @param bool   $block Path of file to open.
      *
      * @return void
      */
-    public function __construct($path = null, $mode = 'a+', $block = false) {
+    public function __construct($path = null, $mode = 'a+', $block = false)
+    {
         if (!is_null($path)) {
             $this->open($path, $mode, $block);
         }
@@ -37,7 +39,8 @@ class File {
      *
      * @return void
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->close();
     }
 
@@ -48,13 +51,14 @@ class File {
      * @throws Exception if a resource type value wasn't returned from fopen()
      *     or if a lock couldn't be acquired on the file resource.
      *
-     * @param  string $path Path of file to open.
-     * @param  string $mode Mode to open the file in.
-     * @param  bool $block Acquire an exclusive write lock that blocks.
+     * @param string $path  Path of file to open.
+     * @param string $mode  Mode to open the file in.
+     * @param bool   $block Acquire an exclusive write lock that blocks.
      *
      * @return bool   $is_open
      */
-    public function open($path = null, $mode = 'a+', $block = false) {
+    public function open($path = null, $mode = 'a+', $block = false)
+    {
         $this->block = $block;
         $this->mode  = $mode;
 
@@ -83,9 +87,10 @@ class File {
      * if there is one.
      *
      * @access public
-     * @return void 
+     * @return void
      */
-    public function close() {
+    public function close()
+    {
         if (is_resource($this->fptr)) {
             if ($this->locked) {
                 flock($this->fptr, LOCK_UN);
@@ -106,13 +111,14 @@ class File {
      * @param  bool $block (default = true)
      * @return void
      */
-    public function set_blocking($block = true) {
+    public function set_blocking($block = true)
+    {
         if ($this->is_open()) {
             $this->close();
         }
 
         if (is_resource($this->fptr)) {
-			$this->block = (bool)$block;
+            $this->block = (bool)$block;
             flock($this->fptr, ($block ? LOCK_EX : LOCK_EX | LOCK_NB));
         }
     }
@@ -123,7 +129,8 @@ class File {
      * @access public
      * @return void
      */
-    public function rm() {
+    public function rm()
+    {
         if ($this->is_open()) {
             $this->close();
         }
@@ -138,7 +145,8 @@ class File {
      *
      * @return bool $is_open
      */
-    public function is_open() {
+    public function is_open()
+    {
         return is_resource($this->fptr) && $this->open;
     }
 
@@ -148,7 +156,8 @@ class File {
      * @access public
      * @return bool $this->locked
      */
-    public function is_locked() {
+    public function is_locked()
+    {
         return $this->locked;
     }
 
@@ -158,7 +167,8 @@ class File {
      * @access public
      * @return bool $this->locked
      */
-    public function is_blocked() {
+    public function is_blocked()
+    {
         return $this->block;
     }
 
@@ -168,12 +178,13 @@ class File {
      *
      * @access public
      * @throws Exception from unabled called to $this->open()
-     * @param  int   $line_count  specified number of lines to return
+     * @param  int $line_count specified number of lines to return
      * @return array $arr
      */
-    public function as_array($line_count = null) {
+    public function as_array($line_count = null)
+    {
         if (!is_resource($this->fptr)) {
-            $this->open();	
+            $this->open();
         }
 
         rewind($this->fptr);
@@ -209,12 +220,13 @@ class File {
      *
      * @throws Exception from unabled called to $this->open()
      * @access public
-     * @param  int    $byte_count   specified string length to return
+     * @param  int $byte_count specified string length to return
      * @return string $str
      */
-    public function as_string($byte_count = null) {
+    public function as_string($byte_count = null)
+    {
         if (!is_resource($this->fptr)) {
-            $this->open();	
+            $this->open();
         }
 
         rewind($this->fptr);
@@ -228,8 +240,7 @@ class File {
                 if ($len > $byte_count) {
                     $str = substr($str, 0, $byte_count);
                     break;
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -245,7 +256,8 @@ class File {
      * @throws Exception from unabled called to $this->open()
      * @return string $last_line
      */
-    public function get_last_line() {
+    public function get_last_line()
+    {
         if (!is_resource($this->fptr)) {
             $this->open();
         }
@@ -253,7 +265,7 @@ class File {
         rewind($this->fptr);
 
         $last_line = '';
-        while (!feof($this->fptr))  {
+        while (!feof($this->fptr)) {
             $line = trim(fgets($this->fptr));
             if (strlen($line)) {
                 if (preg_match("/^\d+$/", $line)) {
@@ -272,10 +284,11 @@ class File {
      *
      * @access public
      * @throws Exception if fputs returns FALSE because it failed to write.
-     * @param  string $line  Data to write to file.
+     * @param  string $line Data to write to file.
      * @return void
      */
-    public function append_line($line) {
+    public function append_line($line)
+    {
         if (!is_resource($this->fptr)) {
             $this->open();
         }
@@ -283,7 +296,7 @@ class File {
         $line .= PHP_EOL;
         $ret = fputs($this->fptr, $line);
 
-        if($ret === false) {
+        if ($ret === false) {
             throw new Exception('fputs returned FALSE');
         }
     }
@@ -292,17 +305,18 @@ class File {
      * Finds a line that matches the $pattern param.
      *
      * @access public
-     * @param  string $pattern  Regex pattern to match
+     * @param  string $pattern Regex pattern to match
      * @return string
      */
-    public function find_matching_line($pattern) {
+    public function find_matching_line($pattern)
+    {
         if (!is_resource($this->fptr)) {
             $this->open();
         }
 
         rewind($this->fptr);
         
-        while(!feof($this->fptr)) {
+        while (!feof($this->fptr)) {
             $line = trim(fgets($this->fptr));
             if (preg_match($pattern, $line)) {
                 return $line;
@@ -311,26 +325,24 @@ class File {
         return null;
     }
 
-	/**
-	 * Truncates contents from file.
-	 *
-	 * @param  bool $close_after_truncate (default = false)
-	 * @return void
-	 */
-	public function truncate($close_after_truncate = false) {
-		if (!is_resource($this->file())) {
-			$this->open();
-		}
+    /**
+     * Truncates contents from file.
+     *
+     * @param  bool $close_after_truncate (default = false)
+     * @return void
+     */
+    public function truncate($close_after_truncate = false)
+    {
+        if (!is_resource($this->file())) {
+            $this->open();
+        }
 
-		$this->set_blocking();
-		ftruncate($this->file, 0);
-		$this->set_blocking(false);
+        $this->set_blocking();
+        ftruncate($this->file, 0);
+        $this->set_blocking(false);
 
-		if ($close_after_truncate) {
-			$this->close();
-		}
-	}
+        if ($close_after_truncate) {
+            $this->close();
+        }
+    }
 }
-
-
-
