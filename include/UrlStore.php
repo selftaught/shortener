@@ -41,33 +41,33 @@ class UrlStore extends File
      * @param  $long_url
      * @return void
      */
-    public function add_entry($long_url, $short_uri = null)
+    public function addEntry($long_url, $short_uri = null)
     {
         if (is_null($long_url)) {
             throw new Exception('long_url was null!');
         }
 
-        $this->block_store();
+        $this->blockStore();
 
-        $idx   = $this->get_next_index();
+        $idx   = $this->getNextIndex();
         $url   = new Url($long_url);
         $short = (is_null($short_uri) || !is_string($short_uri) ? Base58::encode($idx) : $short_uri);
 
         if (!is_int($idx) || !$idx) {
-            $this->unblock_store();
+            $this->unblockStore();
             throw new Exception('couldnt get the next available index!');
         }
 
         if (is_null($short) || !is_string($short) || !strlen($short)) {
-            $this->unblock_store();
+            $this->unblockStore();
             throw new Exception('shortened url is missing or invalid!');
         }
 
         try {
             $this->appendLine(sprintf('%d,%s,%s,%s', $idx, $short, $long_url, date('Y-m-d H:i:s')));
-            $this->unblock_store();
+            $this->unblockStore();
         } catch (Exception $e) {
-            $this->unblock_store();
+            $this->unblockStore();
             exit($e->getMessage());
         }
 
@@ -81,7 +81,7 @@ class UrlStore extends File
      * @access public
      * @return bool
      */
-    public function long_url_exists($long_url)
+    public function longUrlExists($long_url)
     {
         if (!is_string($long_url)
             || is_null($this->findMatchingLine("#,?$long_url,?#"))
@@ -97,9 +97,9 @@ class UrlStore extends File
      * @access public
      * @return void
      */
-    public function block_store()
+    public function blockStore()
     {
-        $this->set_blocking();
+        $this->setBlocking();
     }
 
     /**
@@ -108,9 +108,9 @@ class UrlStore extends File
      * @access public
      * @return void
      */
-    public function unblock_store()
+    public function unblockStore()
     {
-        $this->set_blocking(false);
+        $this->setBlocking(false);
     }
 
     /**
@@ -120,7 +120,7 @@ class UrlStore extends File
      * @param  $cond_vars
      * @return void
      */
-    public function get_row($cond_vars)
+    public function getRow($cond_vars)
     {
         if (!is_array($cond_vars)) {
             throw new Exception("cond_vars param must be an array!");
@@ -170,7 +170,7 @@ class UrlStore extends File
      * @throws Exception
      * @return int
      */
-    public function get_next_index()
+    public function getNextIndex()
     {
         $line = $this->getLastLine();
 

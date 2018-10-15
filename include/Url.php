@@ -34,9 +34,9 @@ class Url
      * @param  string $long_url long url value
      * @return void
      */
-    public function set_long($long_url)
+    public function setLong($long_url)
     {
-        $this->validate_url($long_url);
+        $this->validateUrl($long_url);
         $this->long_url = $long_url;
     }
 
@@ -45,13 +45,13 @@ class Url
      *
      * @access public
      * @throws Exception if the given $url doesn't match the url validation regex
-     *      via a call to $this->validate_url($url).
+     *      via a call to $this->validateUrl($url).
      * @param  string $short_url short url value
      * @return void
      */
-    public function set_short($short_url)
+    public function setShort($short_url)
     {
-        $this->validate_url($short_url);
+        $this->validateUrl($short_url);
         $this->short_url = $short_url;
     }
 
@@ -64,17 +64,17 @@ class Url
      * @param  string $long long url to shorten
      * @return string $short_url  shortened url
      */
-    public function create_short($long)
+    public function createShort($long)
     {
         if (is_null($long) || !strlen($long)) {
             throw new Exception('missing long url!');
         }
 
-        $this->validate_url($long);
+        $this->validateUrl($long);
 
-        $url_store = $this->get_url_store();
-        if ($url_store->long_url_exists($long)) {
-            $row = $url_store->get_row(array('long_url' => $long));
+        $url_store = $this->getUrlStore();
+        if ($url_store->longUrlExists($long)) {
+            $row = $url_store->getRow(array('long_url' => $long));
 
             if (is_array($row)) {
                 $this->short_url = $row['short_url'];
@@ -84,7 +84,7 @@ class Url
         if (!isset($this->short_url)
             || !strlen($this->short_url)
         ) {
-            $this->short_url = sprintf('%s/%s', Config::BASE_URL, $url_store->add_entry($long));
+            $this->short_url = sprintf('%s/%s', Config::BASE_URL, $url_store->addEntry($long));
         }
 
         return $this->short_url;
@@ -98,7 +98,7 @@ class Url
      * @param  string $url url to validate
      * @return true
      */
-    public function validate_url($url)
+    public function validateUrl($url)
     {
         if (!v::url()->validate($url)) {
             throw new Exception('url is invalid!');
@@ -113,7 +113,7 @@ class Url
      *
      * @return object $url_store
      */
-    protected function get_url_store()
+    protected function getUrlStore()
     {
         if (is_null($this->store)
             || !is_object($this->store)
@@ -139,7 +139,7 @@ class Url
         $su_is_null = is_null($this->short_url);
 
         if ($su_is_null && isset($short_url)) {
-            $this->validate_url($short_url);
+            $this->validateUrl($short_url);
             $su_is_null = false;
             $this->short_url = $short_url;
         }
@@ -147,8 +147,8 @@ class Url
         if ($lu_is_null) {
             $throw_msg = 'neither a long or a short url was set!';
             if (!$su_is_null) {
-                $url_store = $this->get_url_store();
-                $row = $url_store->get_row(array('short_url' => $this->short_url));
+                $url_store = $this->getUrlStore();
+                $row = $url_store->getRow(array('short_url' => $this->short_url));
 
                 if (is_array($row)) {
                     $this->long_url = $row['long_url'];
@@ -178,7 +178,7 @@ class Url
         $su_is_null = is_null($this->short_url);
 
         if ($lu_is_null && !is_null($long_url)) {
-            $this->validate_url($long_url);
+            $this->validateUrl($long_url);
             $this->long_url = $long_url;
             $lu_is_null = false;
         }
@@ -189,7 +189,7 @@ class Url
             }
         }
 
-        $this->short_url = $this->create_short($long_url);
+        $this->short_url = $this->createShort($long_url);
 
         return $this->short_url;
     }

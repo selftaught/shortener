@@ -55,14 +55,14 @@ class File
      * @param string $mode  Mode to open the file in.
      * @param bool   $block Acquire an exclusive write lock that blocks.
      *
-     * @return bool   $is_open
+     * @return bool   $isOpen
      */
     public function open($path = null, $mode = 'a+', $block = false)
     {
         $this->block = $block;
         $this->mode  = $mode;
 
-        if ($this->is_open()) {
+        if ($this->isOpen()) {
             return $this->open;
         }
 
@@ -111,9 +111,9 @@ class File
      * @param  bool $block (default = true)
      * @return void
      */
-    public function set_blocking($block = true)
+    public function setBlocking($block = true)
     {
-        if ($this->is_open()) {
+        if ($this->isOpen()) {
             $this->close();
         }
 
@@ -131,7 +131,7 @@ class File
      */
     public function rm()
     {
-        if ($this->is_open()) {
+        if ($this->isOpen()) {
             $this->close();
         }
 
@@ -143,9 +143,9 @@ class File
     /**
      * Returns whether the file is open or not.
      *
-     * @return bool $is_open
+     * @return bool $isOpen
      */
-    public function is_open()
+    public function isOpen()
     {
         return is_resource($this->fptr) && $this->open;
     }
@@ -156,7 +156,7 @@ class File
      * @access public
      * @return bool $this->locked
      */
-    public function is_locked()
+    public function isLocked()
     {
         return $this->locked;
     }
@@ -167,7 +167,7 @@ class File
      * @access public
      * @return bool $this->locked
      */
-    public function is_blocked()
+    public function isBlocked()
     {
         return $this->block;
     }
@@ -181,7 +181,7 @@ class File
      * @param  int $line_count specified number of lines to return
      * @return array $arr
      */
-    public function as_array($line_count = null)
+    public function asArray($line_count = null)
     {
         if (!is_resource($this->fptr)) {
             $this->open();
@@ -337,9 +337,9 @@ class File
             $this->open();
         }
 
-        $this->set_blocking();
+        $this->setBlocking();
         ftruncate($this->file, 0);
-        $this->set_blocking(false);
+        $this->setBlocking(false);
 
         if ($close_after_truncate) {
             $this->close();
