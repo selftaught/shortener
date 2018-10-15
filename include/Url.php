@@ -133,7 +133,7 @@ class Url
      * @param  string $short_url corresponding short url <-> long url value
      * @return string $long_url
      */
-    public function get_long_url($short_url)
+    public function getLongUrl($short_url)
     {
         $lu_is_null = is_null($this->long_url);
         $su_is_null = is_null($this->short_url);
