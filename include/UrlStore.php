@@ -64,7 +64,7 @@ class UrlStore extends File
         }
 
         try {
-            $this->append_line(sprintf('%d,%s,%s,%s', $idx, $short, $long_url, date('Y-m-d H:i:s')));
+            $this->appendLine(sprintf('%d,%s,%s,%s', $idx, $short, $long_url, date('Y-m-d H:i:s')));
             $this->unblock_store();
         } catch (Exception $e) {
             $this->unblock_store();
@@ -84,7 +84,7 @@ class UrlStore extends File
     public function long_url_exists($long_url)
     {
         if (!is_string($long_url)
-            || is_null($this->find_matching_line("#,?$long_url,?#"))
+            || is_null($this->findMatchingLine("#,?$long_url,?#"))
         ) {
             return false;
         }
@@ -141,7 +141,7 @@ class UrlStore extends File
             throw new Exception("short_url, long_url, or index must be set in the param 'cond_vars'");
         }
 
-        $line = $this->find_matching_line('#,?' . $cond_vars[$key] . ',?#');
+        $line = $this->findMatchingLine('#,?' . $cond_vars[$key] . ',?#');
 
         if (is_null($line)) {
             throw new Exception("unable to find the $key!");
@@ -172,7 +172,7 @@ class UrlStore extends File
      */
     public function get_next_index()
     {
-        $line = $this->get_last_line();
+        $line = $this->getLastLine();
 
         if (!strlen($line)) {
             return 1;

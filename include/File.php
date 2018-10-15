@@ -223,7 +223,7 @@ class File
      * @param  int $byte_count specified string length to return
      * @return string $str
      */
-    public function as_string($byte_count = null)
+    public function asString($byte_count = null)
     {
         if (!is_resource($this->fptr)) {
             $this->open();
@@ -256,7 +256,7 @@ class File
      * @throws Exception from unabled called to $this->open()
      * @return string $last_line
      */
-    public function get_last_line()
+    public function getLastLine()
     {
         if (!is_resource($this->fptr)) {
             $this->open();
@@ -287,7 +287,7 @@ class File
      * @param  string $line Data to write to file.
      * @return void
      */
-    public function append_line($line)
+    public function appendLine($line)
     {
         if (!is_resource($this->fptr)) {
             $this->open();
@@ -308,14 +308,14 @@ class File
      * @param  string $pattern Regex pattern to match
      * @return string
      */
-    public function find_matching_line($pattern)
+    public function findMatchingLine($pattern)
     {
         if (!is_resource($this->fptr)) {
             $this->open();
         }
 
         rewind($this->fptr);
-        
+
         while (!feof($this->fptr)) {
             $line = trim(fgets($this->fptr));
             if (preg_match($pattern, $line)) {
